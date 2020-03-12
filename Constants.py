@@ -82,6 +82,7 @@ fire_speed = 11
 x = 500
 y = 300
 mobs = []
+bots=[]
 
 demon_imgs = [[pygame.image.load('data/right_mob1.png').convert_alpha(), pygame.image.load('data/right_mob2.png').convert_alpha(),
                  pygame.image.load('data/right_mob3.png').convert_alpha(), pygame.image.load('data/right_mob4.png').convert_alpha(),
@@ -117,3 +118,12 @@ wall_image = pygame.image.load('data/wall.png').convert_alpha()
 wall_image = pygame.transform.scale(wall_image, (40, 40))
 tree_image = pygame.image.load('data/tree.png').convert_alpha()
 effect = pygame.image.load('data/EffectNew.png').convert_alpha()
+
+bot_imgs = [[pygame.image.load('data/right_mob1.png').convert_alpha(), pygame.image.load('data/right_mob2.png').convert_alpha(),
+                 pygame.image.load('data/right_mob3.png').convert_alpha(), pygame.image.load('data/right_mob4.png').convert_alpha()],
+                [pygame.image.load('data/left_mob1.png').convert_alpha(), pygame.image.load('data/left_mob2.png').convert_alpha(),
+                 pygame.image.load('data/left_mob3.png').convert_alpha(), pygame.image.load('data/left_mob4.png').convert_alpha()],
+                [pygame.image.load('data/up_mob1.png').convert_alpha(), pygame.image.load('data/up_mob2.png').convert_alpha(),
+                 pygame.image.load('data/up_mob3.png').convert_alpha(), pygame.image.load('data/up_mob4.png').convert_alpha()],
+                [pygame.image.load('data/down_mob1.png').convert_alpha(), pygame.image.load('data/down_mob2.png').convert_alpha(),
+                 pygame.image.load('data/down_mob3.png').convert_alpha(), pygame.image.load('data/down_mob4.png').convert_alpha()]]

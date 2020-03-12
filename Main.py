@@ -12,6 +12,7 @@ import Menu
 from Walls import *
 import random
 import time
+import Bot
 
 pygame.init()
 
@@ -28,7 +29,9 @@ class Main():
         self.mobs = mobs
         self.fireballs = []
         self.objects = []
+        self.bots = []
         self.len_of_demons = 2
+        self.demon_dies = 0
         self.Main_loop()
 
     def event(self):
@@ -42,6 +45,8 @@ class Main():
             elif event.type == demon_move:
                 for mob in self.mobs:
                     mob.rand_move()
+                for bot in self.bots:
+                    bot.rand_move()
             elif event.type == demon_remove:
                 for mob in self.mobs:
                     mob.remove(self.mobs, mob)
@@ -82,7 +87,8 @@ class Main():
         self.screen.blit(self.background, (0, 0))
         self.screen.blit(pygame.image.load('data/spawn.png').convert_alpha(), (750, 550))
         self.screen.blit(hud_bar, (110, height - 60))
-        self.screen.blit(pygame.image.load('data/Boss.png').convert_alpha(), (750, 0))
+        if self.Player.dies >= 10:
+            self.screen.blit(pygame.image.load('data/Boss.png').convert_alpha(), (750, 0))
         self.Player.render()
         self.Player.draw_score()
         self.Player.draw_hp_mp()
@@ -91,16 +97,21 @@ class Main():
         fps = font.render('FPS: ' + str((round(self.clock.get_fps(), 2))), 1, (255, 255, 255))
         self.screen.blit(fps, (5, 5))
 
+
         for fireball in self.fireballs:
             fireball.move()
             fireball.render(fireball, self.fireballs)
             fireball.hud_contact(fireball, self.fireballs)
-
             for mob in self.mobs:
                 mob.fireball_contact(self.mobs, mob, self.fireballs, fireball, self.Player)
 
             for wall in self.objects:
                 wall.fireball_contact(fireball, self.fireballs)
+
+        for bot in self.bots:
+            bot.move()
+            bot.render(self.Player)
+            self.Player.contact_check_bot(bot, self.screen)
 
         for mob in self.mobs:
             mob.move()
@@ -114,6 +125,7 @@ class Main():
         for wall in self.objects:
             wall.render()
             self.Player.contact_wall(wall)
+
 
         self.clock.tick(30)
         pygame.display.update()
@@ -155,12 +167,19 @@ class Main():
                 Main(background, Hero.Player('ducky'), start_x, start_y, mobs=[])
             elif pygame.mouse.get_pressed()[0] and 5 < mouse[0] < 75 and 76 < mouse[1] < 105:
                 sys.exit()
+            elif pygame.mouse.get_pressed()[0] and 5 < mouse[0] < 100 and 125 < mouse[1] < 160:
+                Menu.menu.text('W, A, S, D - КНОПКИ ПЕРЕДВИЖЕНИЯ', 15, (15, 200), (255, 255, 255))
+                Menu.menu.text('1,2,3,4 -КНОПКИ ОТВЕЧАЮЩИЕ ЗА СВОСОБНОСТИ ,КОТОРЫЕ АКТИВНЫ ПРИ ОПРЕДЕЛЕННЫХ УСЛОВИЯХ', 15, (15, 230), (255, 255, 255))
+                Menu.menu.text('SHIFT- КНОПКА ОТВЕЧАЮЩАЯ ЗА БЛИНК ПЕРСОНАЖА',15, (15, 260), (255, 255, 255))
+                pygame.display.update()
+
 
             Menu.menu.background()
             Menu.menu.text('Morikov', 30, (15, 10), (255, 255, 255))
             Menu.menu.text('Vinokurov', 30, (15, 40), (255, 255, 255))
             Menu.menu.text('PLAY', 50, (350, 70), (0, 30, 0))
             Menu.menu.text('EXIT', 40, (15, 70), (255, 30, 0))
+            Menu.menu.text('TRAINING', 40, (15, 120), (255, 255, 255))
             pygame.display.update()
 
     def wall_render(self):
@@ -181,8 +200,12 @@ class Main():
     def spawn_mob(self):
         if 718 <= self.Player.x <= 800 and 545 <= self.Player.y <= 600:
             if len(self.mobs) < self.len_of_demons:
-                self.mobs.append(
-                    Mob.Demon(random.randrange(200, 400, 50), random.randrange(200, 400, 50), random.randint(0, 3), 2))
+                self.mobs.append(Mob.Demon(random.randrange(200, 400, 50), random.randrange(200, 400, 50), random.randint(0, 3), 2))
+
+    def spawn_bots(self):
+        if len(self.bots)<1:
+            self.bots.append(Bot.Milena(random.randrange(710, 750), random.randrange(400, 440), random.randint(0, 3), 2))
+
 
     def Player_die(self):
         if self.Player.status == False:
@@ -213,8 +236,9 @@ class Main():
                 pygame.display.update()
 
     def NewLoc(self):
-        if 740 <= self.Player.x <= 800 and 0 <= self.Player.y <= 35:
-            Location(background_2, self.Player, start_x, start_y - 80, mobs=[])
+        if self.Player.dies >= 10:
+            if 740 <= self.Player.x <= 800 and 0 <= self.Player.y <= 35:
+                Location(background_2, self.Player, start_x, start_y - 80, mobs=[])
 
     def Main_loop(self):
         pygame.time.set_timer(mphp_tick, tick_time)
@@ -229,6 +253,7 @@ class Main():
             self.event()
             self.Player.move()
             self.render()
+            self.spawn_bots()
             self.NewLoc()
             self.wall_render()
 
@@ -251,7 +276,6 @@ class Location(Main):
         if len(self.mobs) < self.len_of_demons - 1:
             self.mobs.append(
                 Mob.Bog(random.randrange(200, 400, 50), random.randrange(200, 400, 50), random.randint(0, 3), 3))
-
 
     def render(self):
         self.screen.blit(self.background, (0, 0))

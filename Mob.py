@@ -5,6 +5,7 @@ from Objects import *
 from Main import *
 from Walls import *
 
+
 class Mob:
     def __init__(self, x, y, direction, speed):
         self.moves = [0,0,0,0]
@@ -17,6 +18,7 @@ class Mob:
         self.runstatus = False
         self.fireballs = []
         self.len_of_dem = len_of_demons
+        self.dies = 0
 
     def render(self):
         if self.status == True:
@@ -151,7 +153,7 @@ class Mob:
             hp_render = font.render(str(self.hp), 1, (255, 0, 0))
             screen.blit(hp_render, (self.x + 8, self.y - 20))
 
-    def fireball_contact(self, mobs, mob, fireballs, fireball,Player):
+    def fireball_contact(self, mobs, mob, fireballs, fireball, Player):
         if self.runstatus == False:
             try:
                 if self.x - 32 <= fireball.x <= self.x + 32 and self.y-20 <= fireball.y <= self.y+48 :
@@ -161,6 +163,7 @@ class Mob:
                     if self.hp <= 0:
                         self.status = False
                         Player.score += 50
+                        Player.dies += 1 # счетчик смертей ДЕМОНОВ / КОСТЫЛЬ
             except:
                 pass
 
@@ -170,6 +173,7 @@ class Mob:
             ticks = pygame.time.get_ticks()
             if ticks > 11000:
                 mobs.remove(mob)
+
 
 
     def shoot(self):
@@ -187,6 +191,7 @@ class Demon(Mob):
         self.image = demon_imgs
         self.moves = [0,0,0,0]
         self.hp = demon_hp
+        self.smert = 0
         Mob.__init__(self, x, y, direction, speed)
 
 class Bog(Mob):

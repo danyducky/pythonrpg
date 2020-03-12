@@ -2,6 +2,7 @@ import pygame
 from Constants import *
 import time
 from Mob import *
+import Menu
 
 
 class Player():
@@ -25,7 +26,7 @@ class Player():
         self.hudy = hud_y
         self.status = True
         self.score = score
-        self.len_of_dem=len_of_demons
+        self.len_of_dem = len_of_demons
         self.effect = effect
         self.seconds = 0
         self.ticks = 0
@@ -35,8 +36,7 @@ class Player():
         self.effect_timer = 0
         self.effect_timer_sec = 0
         self.die = True
-
-
+        self.dies = 0
 
     def render(self):
         key = pygame.key.get_pressed()
@@ -215,6 +215,23 @@ class Player():
                         self.mp_regen = 0
                         self.status = False
 
+    def contact_check_bot(self, bot, screen):
+        font = pygame.font.Font('data/font1.ttf', 18)
+        quest = font.render('Квест: убить 10 мобов', 1, (255,0,0))
+        if self.status == True:
+            if bot.x - demon_width - 12 <= self.x < bot.x and bot.y - 30 < self.y <= bot.y + 40:
+                self.x = bot.x - demon_width - 12
+                screen.blit(quest, (330, 15))
+            if bot.x - demon_width <= self.x < bot.x + 35 and bot.y - 30 < self.y <= bot.y + 40:
+                self.x = bot.x + 35
+                screen.blit(quest, (330, 15))
+            if bot.x - demon_width + 10 <= self.x < bot.x + 25 and bot.y - 30 < self.y <= bot.y + 55:
+                self.y = bot.y + 55
+                screen.blit(quest, (330, 15))
+            if bot.x - demon_width + 10 <= self.x < bot.x + 25 and bot.y - 55 < self.y <= bot.y + 50:
+                self.y = bot.y - 55
+                screen.blit(quest, (330, 15))
+
     def contact_wall(self, wall):
         if wall.x - 30 < self.x < wall.x + 20 and wall.y - 40 < self.y < wall.y + 30:
             self.x = wall.x - 30
@@ -224,6 +241,7 @@ class Player():
             self.y = wall.y + 42
         if wall.x - 30 < self.x < wall.x + 40 and wall.y - 50 < self.y < wall.y + 42:
             self.y = wall.y - 50
+
     def contact_tree(self, tree):
         if tree.x - 33 < self.x < tree.x + 20 and tree.y - 42 < self.y < tree.y + 50:
             self.x = tree.x - 33
