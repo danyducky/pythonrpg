@@ -6,14 +6,12 @@ import sys
 from Constants import *
 from Hero import *
 from Objects import *
-# from Mob import *
 import Mob
 import Menu
 from Walls import *
 import random
 import time
 import Bot
-
 pygame.init()
 
 
@@ -155,6 +153,9 @@ class Main():
         import Menu
         import Hero
         pygame.init()
+        status = False
+        status1 = False
+        clock = pygame.time.Clock()
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -167,19 +168,28 @@ class Main():
                 Main(background, Hero.Player('ducky'), start_x, start_y, mobs=[])
             elif pygame.mouse.get_pressed()[0] and 5 < mouse[0] < 75 and 76 < mouse[1] < 105:
                 sys.exit()
-            elif pygame.mouse.get_pressed()[0] and 5 < mouse[0] < 100 and 125 < mouse[1] < 160:
-                Menu.menu.text('W, A, S, D - КНОПКИ ПЕРЕДВИЖЕНИЯ', 15, (15, 200), (255, 255, 255))
-                Menu.menu.text('1,2,3,4 -КНОПКИ ОТВЕЧАЮЩИЕ ЗА СВОСОБНОСТИ ,КОТОРЫЕ АКТИВНЫ ПРИ ОПРЕДЕЛЕННЫХ УСЛОВИЯХ', 15, (15, 230), (255, 255, 255))
-                Menu.menu.text('SHIFT- КНОПКА ОТВЕЧАЮЩАЯ ЗА БЛИНК ПЕРСОНАЖА',15, (15, 260), (255, 255, 255))
-                pygame.display.update()
-
+            if pygame.mouse.get_pressed()[0] and 5 < mouse[0] < 100 and 125 < mouse[1] < 160 and status == False:
+                pygame.time.wait(100)
+                status = True
+            elif pygame.mouse.get_pressed()[0] and 5 < mouse[0] < 100 and 125 < mouse[1] < 160 and status1 == True:
+                pygame.time.wait(100)
+                status = False
 
             Menu.menu.background()
             Menu.menu.text('Morikov', 30, (15, 10), (255, 255, 255))
             Menu.menu.text('Vinokurov', 30, (15, 40), (255, 255, 255))
             Menu.menu.text('PLAY', 50, (350, 70), (0, 30, 0))
             Menu.menu.text('EXIT', 40, (15, 70), (255, 30, 0))
-            Menu.menu.text('TRAINING', 40, (15, 120), (255, 255, 255))
+            Menu.menu.text('Hotkeys', 40, (15, 120), (255, 255, 255))
+
+            if status == True:
+                Menu.menu.text('W, A, S, D - КНОПКИ ПЕРЕДВИЖЕНИЯ', 15, (15, 200), (255, 255, 255))
+                Menu.menu.text('1,2,3,4 -КНОПКИ ОТВЕЧАЮЩИЕ ЗА СВОСОБНОСТИ ,КОТОРЫЕ АКТИВНЫ ПРИ ОПРЕДЕЛЕННЫХ УСЛОВИЯХ', 15, (15, 230), (255, 255, 255))
+                Menu.menu.text('SHIFT- КНОПКА ОТВЕЧАЮЩАЯ ЗА БЛИНК ПЕРСОНАЖА',15, (15, 260), (255, 255, 255))
+                status1 = True
+
+
+
             pygame.display.update()
 
     def wall_render(self):
@@ -221,15 +231,6 @@ class Main():
                             sys.exit()
                         elif event.key == pygame.K_SPACE:
                             Main.menu()
-                            # self.Player.status = True
-                            # self.Player.hp = max_hp
-                            # self.Player.mp = max_mp
-                            # self.Player.max_mp = max_mp
-                            # self.Player.max_hp = max_hp
-                            # self.Player.hp_regen = hp_regen
-                            # self.Player.mp_regen = mp_regen
-                            # self.Player.score = score
-                            # Main(background, self.Player, start_x, start_y, mobs=[])
                 self.screen.blit(Die, (240, 220))
                 self.screen.blit(Esc, (330, 260))
                 self.clock.tick(15)
