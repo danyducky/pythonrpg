@@ -211,7 +211,7 @@ class Bog(Mob):
         elif self.direction == down:
             self.fireballs.append(Fire(self.x, self.y + 10, down, fire_speed))
 
-    def fireball_contact(self, mobs, mob, fireballs, fireball,Player):
+    def fireball_contact(self, mobs, mob, fireballs, fireball, Player): # контакт моба с фирболом
         if self.runstatus == False:
             try:
                 if self.x - 32 <= fireball.x <= self.x + 32 and self.y-20 <= fireball.y <= self.y+48 :
@@ -224,6 +224,8 @@ class Bog(Mob):
             except:
                 pass
 
+
+
     def render_shot(self, objects, Player):
         for fireball in self.fireballs:
             fireball.move()
@@ -231,7 +233,7 @@ class Bog(Mob):
             fireball.render(fireball, self.fireballs)
             try:
                 for wall in objects:
-                    wall.fireball_contact(fireball, self.fireballs)
+                    wall.fireball_contact(fireball, self.fireballs, objects, wall)
             except:
                 pass
             for fireball in self.fireballs:

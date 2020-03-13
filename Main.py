@@ -237,9 +237,9 @@ class Main():
                 pygame.display.update()
 
     def NewLoc(self):
-        if self.Player.dies >= 10:
-            if 740 <= self.Player.x <= 800 and 0 <= self.Player.y <= 35:
-                Location(background_2, self.Player, start_x, start_y - 80, mobs=[])
+    #    if self.Player.dies >= 10:
+        if 740 <= self.Player.x <= 800 and 0 <= self.Player.y <= 35:
+            Location(background_2, self.Player, start_x, start_y - 80, mobs=[])
 
     def Main_loop(self):
         pygame.time.set_timer(mphp_tick, tick_time)
@@ -271,7 +271,7 @@ class Location(Main):
 
     def wall_render(self):
         if len(self.objects) < 15:
-            self.objects.append(Tree(random.randrange(0, 750, 75), random.randrange(0, 400, 75)))
+            self.objects.append(Tree(random.randrange(0, 750, 90), random.randrange(0, 400, 120)))
 
     def spawn_mob(self):
         if len(self.mobs) < self.len_of_demons - 1:
@@ -321,7 +321,7 @@ class Location(Main):
                         pygame.display.update()
 
             for tree in self.objects:
-                tree.fireball_contact(fireball, self.fireballs)
+                tree.fireball_player_contact(fireball, self.fireballs)
 
         for mob in self.mobs:
             mob.move()

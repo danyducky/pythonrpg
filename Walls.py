@@ -29,7 +29,15 @@ class Tree(Objects):
         self.image = tree_image
         Objects.__init__(self, x, y)
 
-    def fireball_contact(self, fireball, fireballs):
+    def fireball_contact(self, fireball, fireballs, trees, tree):
+        try:
+            if self.x - 32 <= fireball.x <= self.x + 20 and self.y - 28 <= fireball.y <= self.y + 65:
+                fireballs.remove(fireball)
+                trees.remove(tree)
+        except:
+            pass
+
+    def fireball_player_contact(self, fireball, fireballs):
         try:
             if self.x - 32 <= fireball.x <= self.x + 20 and self.y - 28 <= fireball.y <= self.y + 65:
                 fireballs.remove(fireball)
