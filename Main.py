@@ -271,7 +271,7 @@ class Location(Main):
 
     def wall_render(self):
         if len(self.objects) < 15:
-            self.objects.append(Tree(random.randrange(0, 750, 90), random.randrange(0, 400, 120)))
+            self.objects.append(Tree(random.randrange(0, 750, 75), random.randrange(0, 400, 90)))
 
     def spawn_mob(self):
         if len(self.mobs) < self.len_of_demons - 1:
