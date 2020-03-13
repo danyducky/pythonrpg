@@ -3,6 +3,7 @@ from Constants import *
 import time
 from Mob import *
 import Menu
+from Bot import *
 
 
 class Player():
@@ -221,15 +222,23 @@ class Player():
         if self.status == True:
             if bot.x - demon_width - 12 <= self.x < bot.x and bot.y - 30 < self.y <= bot.y + 40:
                 self.x = bot.x - demon_width - 12
+                bot.moves = [0,0,0,0]
+                bot.direction = 1
                 screen.blit(quest, (330, 15))
             if bot.x - demon_width <= self.x < bot.x + 35 and bot.y - 30 < self.y <= bot.y + 40:
                 self.x = bot.x + 35
+                bot.moves = [0,0,0,0]
+                bot.direction = 0
                 screen.blit(quest, (330, 15))
             if bot.x - demon_width + 10 <= self.x < bot.x + 25 and bot.y - 30 < self.y <= bot.y + 55:
                 self.y = bot.y + 55
+                bot.moves = [0,0,0,0]
+                bot.direction = 3
                 screen.blit(quest, (330, 15))
             if bot.x - demon_width + 10 <= self.x < bot.x + 25 and bot.y - 55 < self.y <= bot.y + 50:
                 self.y = bot.y - 55
+                bot.moves = [0,0,0,0]
+                bot.direction = 2
                 screen.blit(quest, (330, 15))
 
     def contact_wall(self, wall):
