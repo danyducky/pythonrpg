@@ -66,6 +66,7 @@ class OutBot:
         if self.status == True:
             self.moves = [0,0,0,0]
             self.moves[random.randint(0,3)] = 1
+
 class Milena(OutBot):
     def __init__(self, x, y, direction, speed):
         self.image = bot_imgs

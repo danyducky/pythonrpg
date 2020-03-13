@@ -127,3 +127,11 @@ bot_imgs = [[pygame.image.load('data/right_mob1.png').convert_alpha(), pygame.im
                  pygame.image.load('data/up_mob3.png').convert_alpha(), pygame.image.load('data/up_mob4.png').convert_alpha()],
                 [pygame.image.load('data/down_mob1.png').convert_alpha(), pygame.image.load('data/down_mob2.png').convert_alpha(),
                  pygame.image.load('data/down_mob3.png').convert_alpha(), pygame.image.load('data/down_mob4.png').convert_alpha()]]
+
+
+
+invent_img = pygame.image.load('data/unknown.jpg').convert_alpha()
+invent_img = pygame.transform.scale(invent_img, (90, 66))
+
+dagger_img = pygame.image.load('data/dagger.png').convert_alpha()
+dagger_img = pygame.transform.scale(dagger_img, (40,40))

@@ -174,8 +174,6 @@ class Mob:
             if ticks > 11000:
                 mobs.remove(mob)
 
-
-
     def shoot(self):
         if self.direction == right:
             self.fireballs.append(fireball(self.x + 5, self.y, right, fireball_speed))
