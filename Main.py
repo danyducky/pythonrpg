@@ -109,7 +109,7 @@ class Main:
         for bot in self.bots:
             bot.move()
             bot.render(self.Player)
-            self.Player.contact_check_bot(bot, self.screen)
+            self.Player.contact_check_bot(bot, self.screen, self.objects, self.fireballs, self.mobs, self.Player)
 
         for mob in self.mobs:
             mob.move()

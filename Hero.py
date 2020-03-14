@@ -1,5 +1,6 @@
 import pygame
 from Constants import *
+from Main import *
 import time
 from Mob import *
 import Menu
@@ -38,6 +39,7 @@ class Player():
         self.effect_timer_sec = 0
         self.die = True
         self.dies = 0
+        self.quest_delay = 0
 
     def render(self):
         key = pygame.key.get_pressed()
@@ -52,6 +54,7 @@ class Player():
                 self.effect_status = False
 
         if self.status == True:
+            self.quest_delay += 1
             screen.blit(self.image[self.direction][self.counter // 6], (self.x, self.y))
             screen.blit(self.imgs[self.direction][self.hud // 4], (self.hudx, self.hudy))
         else:
@@ -216,30 +219,79 @@ class Player():
                         self.mp_regen = 0
                         self.status = False
 
-    def contact_check_bot(self, bot, screen):
-        font = pygame.font.Font('data/font1.ttf', 18)
-        quest = font.render('Квест: убить 10 мобов', 1, (255,0,0))
+    def contact_check_bot(self, bot, screen, objects, fireballs, mobs, player):
         if self.status == True:
             if bot.x - demon_width - 12 <= self.x < bot.x and bot.y - 30 < self.y <= bot.y + 40:
+                bot.direction = 1
                 self.x = bot.x - demon_width - 12
                 bot.moves = [0,0,0,0]
-                bot.direction = 1
-                screen.blit(quest, (330, 15))
+                if self.quest_delay > 120:
+                    self.quest_message(screen, objects, fireballs, mobs, player)
+                    self.quest_delay = 0
+                #self.x = bot.x - demon_width - 24
             if bot.x - demon_width <= self.x < bot.x + 35 and bot.y - 30 < self.y <= bot.y + 40:
+                bot.direction = 0
                 self.x = bot.x + 35
                 bot.moves = [0,0,0,0]
-                bot.direction = 0
-                screen.blit(quest, (330, 15))
+                if self.quest_delay > 120:
+                    self.quest_message(screen, objects, fireballs, mobs, player)
+                    self.quest_delay = 0
             if bot.x - demon_width + 10 <= self.x < bot.x + 25 and bot.y - 30 < self.y <= bot.y + 55:
+                bot.direction = 3
                 self.y = bot.y + 55
                 bot.moves = [0,0,0,0]
-                bot.direction = 3
-                screen.blit(quest, (330, 15))
+                if self.quest_delay > 120:
+                    self.quest_message(screen, objects, fireballs, mobs, player)
+                    self.quest_delay = 0
             if bot.x - demon_width + 10 <= self.x < bot.x + 25 and bot.y - 55 < self.y <= bot.y + 50:
+                bot.direction = 2
                 self.y = bot.y - 55
                 bot.moves = [0,0,0,0]
-                bot.direction = 2
-                screen.blit(quest, (330, 15))
+                if self.quest_delay > 120:
+                    self.quest_message(screen, objects, fireballs, mobs, player)
+                    self.quest_delay = 0
+
+    def quest_message(self, screen, objects, fireballs, mobs, player):
+        font = pygame.font.Font('data/font1.ttf', 18)
+        quest = font.render('Квест: убить 10 мобов', 1, (255,0,0))
+        kills = font.render('Убито: ' + str(self.dies), 1, (255,0,0))
+        ok = font.render('OK', 1, (200,200,200))
+
+        for fireball in fireballs:
+            fireball.hud_contact(fireball, fireballs)
+            fireball.render(fireball, fireballs)
+        for mob in mobs:
+            mob.draw_hp()
+            mob.render_shot(objects, player)
+            mob.render()
+        for wall in objects:
+            wall.render()
+
+        while True:
+            key = pygame.key.get_pressed()
+            mouse = pygame.mouse.get_pos()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+            if key[pygame.K_SPACE]:
+                return False
+            elif key[pygame.K_ESCAPE]:
+                return False
+            if 387 < mouse[0] < 415 and 284 < mouse[1] < 297 and pygame.mouse.get_pressed()[0]:
+                return False
+
+
+            pygame.draw.rect(screen, (0,0,0), (290, 235, 220, 75))
+            pygame.draw.line(screen, (255,255,255), (290, 235), (290+218, 235), 2)
+            pygame.draw.line(screen, (255,255,255), (290, 235), (290, 235+75), 2)
+            pygame.draw.line(screen, (255,255,255), (290+218, 235), (290+218, 235+75), 2)
+            pygame.draw.line(screen, (255,255,255), (290, 235+75), (290+218, 235+75), 2)
+            screen.blit(quest, (330, 243))
+            screen.blit(kills, (377, 263))
+            screen.blit(ok, (393, 284))
+            pygame.display.update()
+
+
 
     def contact_wall(self, wall):
         if wall.x - 30 < self.x < wall.x + 20 and wall.y - 40 < self.y < wall.y + 30:

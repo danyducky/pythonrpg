@@ -146,6 +146,7 @@ class Mob:
         if tree.x - 30 < self.x < tree.x + 20 and tree.y - 50 < self.y < tree.y + 42:
             self.y = tree.y - 50
             self.moves = [0, 1, 0, 0]
+
     def draw_hp(self):
         if self.status == True:
             font_size = 12
