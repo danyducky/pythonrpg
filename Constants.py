@@ -1,5 +1,5 @@
 import pygame
-score=0
+score = 0
 width = 800
 height = 600
 screen = pygame.display.set_mode((width, height))
@@ -10,11 +10,12 @@ pygame.display.set_icon(pygame.image.load('data/icon.png').convert_alpha())
 hud_bar = pygame.image.load('data/HudBar.png').convert_alpha()
 background_2 = pygame.image.load('data/NewBackground.jpg').convert_alpha()
 background_2 = pygame.transform.scale(background_2, (width, height))
+loc2_background = pygame.image.load('data/loc2background.jpg').convert_alpha()
+loc2_background = pygame.transform.scale(loc2_background, (800, 600))
 hud_x = 0
 hud_y = 600 - 110
 start_x = 605
 start_y = 552
-MainPlayer = ('ducky', start_x, start_y)
 player_imgs = [
     [pygame.image.load('data/right.png').convert_alpha(), pygame.image.load('data/right1.png').convert_alpha(), pygame.image.load('data/right2.png').convert_alpha(),
      pygame.image.load('data/right3.png').convert_alpha(), pygame.image.load('data/right.png').convert_alpha(), pygame.image.load('data/right1.png').convert_alpha()],
@@ -34,7 +35,7 @@ hud_imgs = [
      pygame.image.load('data/ups3.png').convert_alpha()],
     [pygame.image.load('data/downs.png').convert_alpha(), pygame.image.load('data/downs1.png').convert_alpha(), pygame.image.load('data/downs2.png').convert_alpha(),
      pygame.image.load('data/downs3.png').convert_alpha()]]
-# 32 48
+
 image_counter = 0
 image_hud = 0
 right = 0
@@ -45,13 +46,13 @@ down = 3
 speed = 5
 
 max_hp = 100
-max_mp = 60
+max_mp = 70
 attack_manacost = 10
 
 mp_regen = 2
 hp_regen = 1
 demon_hp = 200
-len_of_demons=2
+len_of_demons = 2
 mphp_tick = pygame.USEREVENT + 1
 tick_time = 1000
 spawn_mob = pygame.USEREVENT + 2
@@ -64,8 +65,6 @@ demon_shoot = pygame.USEREVENT + 5
 shoot_delay = 1200
 demon_delay = pygame.USEREVENT + 6
 demon_time_delay = 15000
-#draw_effect = pygame.USEREVENT + 7
-#effect_delay = 1500
 Player_die = pygame.USEREVENT + 0
 Player_die_delay = 1500
 
@@ -112,21 +111,21 @@ bog_imgs = [[pygame.image.load('data/right_bog.png').convert_alpha(), pygame.ima
 
 demon_width = 32
 demon_height = 48
-
-
+damage = 40
 wall_image = pygame.image.load('data/wall.png').convert_alpha()
 wall_image = pygame.transform.scale(wall_image, (40, 40))
 tree_image = pygame.image.load('data/tree.png').convert_alpha()
 effect = pygame.image.load('data/EffectNew.png').convert_alpha()
-
-bot_imgs = [[pygame.image.load('data/right_mob1.png').convert_alpha(), pygame.image.load('data/right_mob2.png').convert_alpha(),
-                 pygame.image.load('data/right_mob3.png').convert_alpha(), pygame.image.load('data/right_mob4.png').convert_alpha()],
-                [pygame.image.load('data/left_mob1.png').convert_alpha(), pygame.image.load('data/left_mob2.png').convert_alpha(),
-                 pygame.image.load('data/left_mob3.png').convert_alpha(), pygame.image.load('data/left_mob4.png').convert_alpha()],
-                [pygame.image.load('data/up_mob1.png').convert_alpha(), pygame.image.load('data/up_mob2.png').convert_alpha(),
-                 pygame.image.load('data/up_mob3.png').convert_alpha(), pygame.image.load('data/up_mob4.png').convert_alpha()],
-                [pygame.image.load('data/down_mob1.png').convert_alpha(), pygame.image.load('data/down_mob2.png').convert_alpha(),
-                 pygame.image.load('data/down_mob3.png').convert_alpha(), pygame.image.load('data/down_mob4.png').convert_alpha()]]
+teleport =pygame.image.load('data/Area.png').convert_alpha()
+teleport=pygame.transform.scale(teleport, (50, 50))
+bot_imgs = [[pygame.image.load('data/bot_right1.png').convert_alpha(), pygame.image.load('data/bot_right2.png').convert_alpha(),
+                 pygame.image.load('data/bot_right3.png').convert_alpha(), pygame.image.load('data/bot_right4.png').convert_alpha()],
+                [pygame.image.load('data/bot_left1.png').convert_alpha(), pygame.image.load('data/bot_left2.png').convert_alpha(),
+                 pygame.image.load('data/bot_left3.png').convert_alpha(), pygame.image.load('data/bot_left4.png').convert_alpha()],
+                [pygame.image.load('data/bot_down1.png').convert_alpha(), pygame.image.load('data/bot_down2.png').convert_alpha(),
+                 pygame.image.load('data/bot_down3.png').convert_alpha(), pygame.image.load('data/bot_down4.png').convert_alpha()],
+                [pygame.image.load('data/bot_up1.png').convert_alpha(), pygame.image.load('data/bot_up2.png').convert_alpha(),
+                 pygame.image.load('data/bot_up3.png').convert_alpha(), pygame.image.load('data/bot_up4.png').convert_alpha()]]
 
 
 
@@ -135,3 +134,10 @@ invent_img = pygame.transform.scale(invent_img, (90, 66))
 
 dagger_img = pygame.image.load('data/dagger.png').convert_alpha()
 dagger_img = pygame.transform.scale(dagger_img, (40,40))
+
+
+radiance = False
+radiance_true = pygame.image.load('data/radiance.png').convert_alpha()
+radiance_true = pygame.transform.scale(radiance_true, (30, 30))
+radiance_false = pygame.image.load('data/radiance1.png').convert_alpha()
+radiance_false = pygame.transform.scale(radiance_false, (30, 30))

@@ -7,6 +7,20 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -24,8 +38,9 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="preferences.editor" />
   </component>
-  <component name="RunManager" selected="Python.Hero">
+  <component name="RunManager" selected="Python.Main">
     <configuration name="Bot" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="pyduck" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -94,8 +109,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Hero" />
         <item itemvalue="Python.Main" />
+        <item itemvalue="Python.Hero" />
         <item itemvalue="Python.Bot" />
       </list>
     </recent_temporary>
@@ -115,6 +130,19 @@
       <workItem from="1583859654831" duration="692000" />
       <workItem from="1584024159950" duration="1727000" />
       <workItem from="1584025958230" duration="271000" />
+      <workItem from="1584191610210" duration="1772000" />
+      <workItem from="1584193453031" duration="753000" />
+      <workItem from="1584195485506" duration="291000" />
+      <workItem from="1584196867700" duration="353000" />
+      <workItem from="1584248678089" duration="1160000" />
+      <workItem from="1584251957061" duration="1781000" />
+      <workItem from="1584253783555" duration="1781000" />
+      <workItem from="1584256817003" duration="373000" />
+      <workItem from="1584257229760" duration="1760000" />
+      <workItem from="1584259038946" duration="1324000" />
+      <workItem from="1584261047595" duration="752000" />
+      <workItem from="1584285989213" duration="1747000" />
+      <workItem from="1584287819725" duration="1502000" />
     </task>
     <servers />
   </component>
@@ -122,26 +150,26 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1323" height="226" key="GridCell.Tab.0.bottom" timestamp="1584026229849">
+    <state width="1323" height="126" key="GridCell.Tab.0.bottom" timestamp="1584289332794">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="1323" height="178" key="GridCell.Tab.0.bottom/0.0.1366.728/1366.0.1360.728@0.0.1366.728" timestamp="1583844773319" />
-    <state width="1323" height="226" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1584026229849" />
-    <state width="1323" height="226" key="GridCell.Tab.0.center" timestamp="1584026229849">
+    <state width="1323" height="126" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1584289332794" />
+    <state width="1323" height="126" key="GridCell.Tab.0.center" timestamp="1584289332793">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="1323" height="178" key="GridCell.Tab.0.center/0.0.1366.728/1366.0.1360.728@0.0.1366.728" timestamp="1583844773319" />
-    <state width="1323" height="226" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1584026229849" />
-    <state width="1323" height="226" key="GridCell.Tab.0.left" timestamp="1584026229849">
+    <state width="1323" height="126" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1584289332793" />
+    <state width="1323" height="126" key="GridCell.Tab.0.left" timestamp="1584289332793">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="1323" height="178" key="GridCell.Tab.0.left/0.0.1366.728/1366.0.1360.728@0.0.1366.728" timestamp="1583844773319" />
-    <state width="1323" height="226" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1584026229849" />
-    <state width="1323" height="226" key="GridCell.Tab.0.right" timestamp="1584026229849">
+    <state width="1323" height="126" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1584289332793" />
+    <state width="1323" height="126" key="GridCell.Tab.0.right" timestamp="1584289332794">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="1323" height="178" key="GridCell.Tab.0.right/0.0.1366.728/1366.0.1360.728@0.0.1366.728" timestamp="1583844773319" />
-    <state width="1323" height="226" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1584026229849" />
+    <state width="1323" height="126" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1584289332794" />
     <state width="1323" height="226" key="GridCell.Tab.1.bottom" timestamp="1584026229850">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -158,15 +186,19 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="1323" height="226" key="GridCell.Tab.1.right/0.0.1366.738@0.0.1366.738" timestamp="1584026229850" />
-    <state x="363" y="190" key="com.intellij.ide.util.TipDialog" timestamp="1584025957273">
+    <state x="184" y="10" key="SettingsEditor" timestamp="1584257603763">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state x="184" y="10" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1584257603763" />
+    <state x="363" y="190" key="com.intellij.ide.util.TipDialog" timestamp="1584191614147">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="363" y="187" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1583857740802" />
-    <state x="363" y="190" key="com.intellij.ide.util.TipDialog/0.0.1366.738@0.0.1366.738" timestamp="1584025957273" />
+    <state x="363" y="190" key="com.intellij.ide.util.TipDialog/0.0.1366.738@0.0.1366.738" timestamp="1584191614147" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/pyduck$Hero.coverage" NAME="Hero Coverage Results" MODIFIED="1584026162931" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/pyduck$Main.coverage" NAME="Main Coverage Results" MODIFIED="1584026141271" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pyduck$Hero.coverage" NAME="Hero Coverage Results" MODIFIED="1584191677548" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/pyduck$Main.coverage" NAME="Main Coverage Results" MODIFIED="1584289206402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/pyduck$Bot.coverage" NAME="Bot Coverage Results" MODIFIED="1583859157263" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
