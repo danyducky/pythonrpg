@@ -1,5 +1,7 @@
 import pygame
 import random
+import Constants
+import Main
 from Constants import *
 from Objects import *
 from Main import *
@@ -16,6 +18,7 @@ class Mob:
         self.counter = 0
         self.status = True
         self.runstatus = False
+        self.fireball_kill = False
         self.fireballs = []
         self.len_of_dem = len_of_demons
         self.dies = 0
@@ -28,6 +31,7 @@ class Mob:
             self.status = False
             self.moves = [0,0,0,0]
             screen.blit(pygame.image.load('data/demon_die.png'), (self.x, self.y))
+
 
     def render_shot(self, objects, Player):
         for fireball in self.fireballs:
@@ -52,8 +56,17 @@ class Mob:
                             Player.status = False
 
 
-    def move(self):
+    def move(self, Player):
         self.block_check()
+
+        if Constants.radiance == True:
+            if self.runstatus == False:
+                self.hp -= 5
+                if self.hp <= 0 and self.fireball_kill == False:
+                    self.status = False
+                    Player.score += 50
+                    Player.dies += 1
+
         if self.moves[right] == 1:
             self.direction = right
             self.x += self.speed
@@ -83,6 +96,8 @@ class Mob:
         if self.status == True:
             self.moves = [0,0,0,0]
             self.moves[random.randint(0,3)] = 1
+
+
 
     def block_check(self):
         if self.x <= 0:
@@ -146,24 +161,27 @@ class Mob:
         if tree.x - 30 < self.x < tree.x + 20 and tree.y - 50 < self.y < tree.y + 42:
             self.y = tree.y - 50
             self.moves = [0, 1, 0, 0]
+
     def draw_hp(self):
         if self.status == True:
             font_size = 12
             font = pygame.font.Font('data/font1.ttf', font_size)
-            hp_render = font.render(str(self.hp), 1, (255, 0, 0))
+            hp_render = font.render(str(int(self.hp)), 1, (255, 0, 0))
             screen.blit(hp_render, (self.x + 8, self.y - 20))
 
     def fireball_contact(self, mobs, mob, fireballs, fireball, Player):
         if self.runstatus == False:
             try:
-                if self.x - 32 <= fireball.x <= self.x + 32 and self.y-20 <= fireball.y <= self.y+48 :
+                if self.x - 32 <= fireball.x <= self.x + 32 and self.y-20 <= fireball.y <= self.y+48:
+                    self.fireball_kill = True
                     fireballs.remove(fireball)
                     if self.hp > 0:
-                        self.hp -= 50
+                        self.hp -= Constants.damage
                     if self.hp <= 0:
                         self.status = False
+                    if self.status == False:
                         Player.score += 50
-                        Player.dies += 1 # счетчик смертей ДЕМОНОВ / КОСТЫЛЬ
+                        Player.dies += 1
             except:
                 pass
 
@@ -173,8 +191,6 @@ class Mob:
             ticks = pygame.time.get_ticks()
             if ticks > 11000:
                 mobs.remove(mob)
-
-
 
     def shoot(self):
         if self.direction == right:
@@ -201,6 +217,66 @@ class Bog(Mob):
         self.hp = 1500
         Mob.__init__(self, x, y, direction, speed)
 
+
+    def move(self, screen, clock, Player, objects):
+        self.block_check()
+
+        if Constants.radiance == True:
+            if self.runstatus == False:
+                self.hp -= 5
+
+        self.bog_die(screen, clock, objects)
+
+        if self.moves[right] == 1:
+            self.direction = right
+            self.x += self.speed
+            self.counter += 1
+            if self.counter == 36:
+                self.counter = 0
+        if self.moves[left] == 1:
+            self.direction = left
+            self.x -= self.speed
+            self.counter += 1
+            if self.counter == 36:
+                self.counter = 0
+        if self.moves[up] == 1:
+            self.y -= self.speed
+            self.direction = up
+            self.counter += 1
+            if self.counter == 36:
+                self.counter = 0
+        if self.moves[down] == 1:
+            self.y += self.speed
+            self.direction = down
+            self.counter += 1
+            if self.counter == 36:
+                self.counter = 0
+
+    def bog_die(self, screen, clock, objects):
+        if self.hp <= 0:
+            self.status = False
+            while True:
+                for tree in objects:
+                    tree.render()
+                font = pygame.font.Font('data/font1.ttf', 40)
+                Over = font.render('Game Over', 1, (255, 0, 0))
+                Esc = font.render('ESC to EXIT', 1, (255, 0, 0))
+                Space = font.render('SPACE to REgame', 1, (0, 0, 0))
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        sys.exit()
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            sys.exit()
+                        elif event.key == pygame.K_SPACE:
+                            Main.Main.menu()
+
+                screen.blit(Over, (350, 210))
+                screen.blit(Esc, (345, 250))
+                screen.blit(Space, (308, 290))
+                clock.tick(15)
+                pygame.display.update()
+
     def shoot(self):
         if self.direction == right:
             self.fireballs.append(Fire(self.x + 5, self.y, right, fire_speed))
@@ -212,17 +288,17 @@ class Bog(Mob):
             self.fireballs.append(Fire(self.x, self.y + 10, down, fire_speed))
 
     def fireball_contact(self, mobs, mob, fireballs, fireball, Player): # контакт моба с фирболом
-        if self.runstatus == False:
-            try:
-                if self.x - 32 <= fireball.x <= self.x + 32 and self.y-20 <= fireball.y <= self.y+48 :
-                    fireballs.remove(fireball)
-                    if self.hp > 0:
-                        self.hp -= 50
-                    if self.hp <= 0:
-                        self.status = False
-                        Player.score += 50
-            except:
-                pass
+            if self.runstatus == False:
+                try:
+                    if self.x - 32 <= fireball.x <= self.x + 32 and self.y-20 <= fireball.y <= self.y+48:
+                        self.fireball_kill = True
+                        fireballs.remove(fireball)
+                        if self.hp > 0:
+                            self.hp -= Constants.damage
+                        if self.hp <= 0:
+                            self.status = False
+                except:
+                    pass
 
 
 

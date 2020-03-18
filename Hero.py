@@ -1,5 +1,7 @@
 import pygame
 from Constants import *
+import Constants
+from Main import *
 import time
 from Mob import *
 import Menu
@@ -38,6 +40,7 @@ class Player():
         self.effect_timer_sec = 0
         self.die = True
         self.dies = 0
+        self.quest_delay = 0
 
     def render(self):
         key = pygame.key.get_pressed()
@@ -52,11 +55,14 @@ class Player():
                 self.effect_status = False
 
         if self.status == True:
+            self.quest_delay += 1
             screen.blit(self.image[self.direction][self.counter // 6], (self.x, self.y))
             screen.blit(self.imgs[self.direction][self.hud // 4], (self.hudx, self.hudy))
         else:
             screen.blit(pygame.image.load('data/demon_die.png'), (self.x, self.y))
             screen.blit(self.imgs[self.direction][self.hud // 4], (self.hudx, self.hudy))
+            Constants.radiance = False
+            Constants.damage = 40
 
     def render_of_score(self):
         key = pygame.key.get_pressed()
@@ -175,10 +181,10 @@ class Player():
         if self.y > height - 155 and self.x < 110:
             self.y = height - 155
 
-        if 100 < self.x < 260 and 450 < self.y < 520:
+        if 100 < self.x < 300 and 450 < self.y < 520:
             self.y = 450
-        if 100 < self.x < 270 and 465 < self.y < 505:
-            self.x = 270
+        if 100 < self.x < 310 and 465 < self.y < 505:
+            self.x = 310
 
     def contact_check(self, mob):
         if mob.runstatus == False:
@@ -216,30 +222,212 @@ class Player():
                         self.mp_regen = 0
                         self.status = False
 
-    def contact_check_bot(self, bot, screen):
+    def contact_check_bot(self, bot, screen, objects, fireballs, mobs, player):
+        if self.status == True:
+            if bot.status == True:
+                if bot.x - demon_width - 12 <= self.x < bot.x and bot.y - 30 < self.y <= bot.y + 40:
+                    bot.direction = 1
+                    self.x = bot.x - demon_width - 12
+                    bot.moves = [0,0,0,0]
+
+                    if self.quest_delay > 120:
+                        self.quest_message(screen, objects, fireballs, mobs, player)
+                        self.quest_delay = 0
+
+                if bot.x - demon_width <= self.x < bot.x + 35 and bot.y - 30 < self.y <= bot.y + 40:
+                    bot.direction = 0
+                    self.x = bot.x + 35
+                    bot.moves = [0,0,0,0]
+
+                    if self.quest_delay > 120:
+                        self.quest_message(screen, objects, fireballs, mobs, player)
+                        self.quest_delay = 0
+
+                if bot.x - demon_width + 10 <= self.x < bot.x + 25 and bot.y - 30 < self.y <= bot.y + 55:
+                    bot.direction = 3
+                    self.y = bot.y + 55
+                    bot.moves = [0,0,0,0]
+
+                    if self.quest_delay > 120:
+                        self.quest_message(screen, objects, fireballs, mobs, player)
+                        self.quest_delay = 0
+
+                if bot.x - demon_width + 10 <= self.x < bot.x + 25 and bot.y - 55 < self.y <= bot.y + 50:
+                    bot.direction = 2
+                    self.y = bot.y - 55
+                    bot.moves = [0,0,0,0]
+
+                    if self.quest_delay > 120:
+                        self.quest_message(screen, objects, fireballs, mobs, player)
+                        self.quest_delay = 0
+
+    def quest_message(self, screen, objects, fireballs, mobs, player):
         font = pygame.font.Font('data/font1.ttf', 18)
         quest = font.render('Квест: убить 10 мобов', 1, (255,0,0))
+        kills = font.render('Убито: ' + str(self.dies), 1, (255,0,0))
+        ok = font.render('OK', 1, (200,200,200))
+
+
+        for mob in mobs:
+            mob.draw_hp()
+            mob.render_shot(objects, player)
+            mob.render()
+        for wall in objects:
+            wall.render()
+
+        while True:
+            key = pygame.key.get_pressed()
+            mouse = pygame.mouse.get_pos()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+            if key[pygame.K_SPACE]:
+                return False
+            elif key[pygame.K_ESCAPE]:
+                return False
+            if 387 < mouse[0] < 415 and 284 < mouse[1] < 297 and pygame.mouse.get_pressed()[0]:
+                return False
+
+            pygame.draw.rect(screen, (0,0,0), (290, 235, 220, 75))
+            pygame.draw.line(screen, (255,255,255), (290, 235), (290+218, 235), 2)
+            pygame.draw.line(screen, (255,255,255), (290, 235), (290, 235+75), 2)
+            pygame.draw.line(screen, (255,255,255), (290+218, 235), (290+218, 235+75), 2)
+            pygame.draw.line(screen, (255,255,255), (290, 235+75), (290+218, 235+75), 2)
+            screen.blit(quest, (330, 243))
+            screen.blit(kills, (377, 263))
+            screen.blit(ok, (393, 284))
+            pygame.display.update()
+
+    def contact_check_reseiler(self, bot, screen):
         if self.status == True:
             if bot.x - demon_width - 12 <= self.x < bot.x and bot.y - 30 < self.y <= bot.y + 40:
+                bot.direction = 1
                 self.x = bot.x - demon_width - 12
                 bot.moves = [0,0,0,0]
-                bot.direction = 1
-                screen.blit(quest, (330, 15))
+
+                if self.quest_delay > 120:
+                    self.shop_message(screen)
+                    self.quest_delay = 0
+
             if bot.x - demon_width <= self.x < bot.x + 35 and bot.y - 30 < self.y <= bot.y + 40:
+                bot.direction = 0
                 self.x = bot.x + 35
                 bot.moves = [0,0,0,0]
-                bot.direction = 0
-                screen.blit(quest, (330, 15))
+
+                if self.quest_delay > 120:
+                    self.shop_message(screen)
+                    self.quest_delay = 0
+
             if bot.x - demon_width + 10 <= self.x < bot.x + 25 and bot.y - 30 < self.y <= bot.y + 55:
+                bot.direction = 3
                 self.y = bot.y + 55
                 bot.moves = [0,0,0,0]
-                bot.direction = 3
-                screen.blit(quest, (330, 15))
+
+                if self.quest_delay > 120:
+                    self.shop_message(screen)
+                    self.quest_delay = 0
+
             if bot.x - demon_width + 10 <= self.x < bot.x + 25 and bot.y - 55 < self.y <= bot.y + 50:
+                bot.direction = 2
                 self.y = bot.y - 55
                 bot.moves = [0,0,0,0]
-                bot.direction = 2
-                screen.blit(quest, (330, 15))
+
+                if self.quest_delay > 120:
+                    self.shop_message(screen)
+                    self.quest_delay = 0
+
+
+
+
+    def shop_message(self, screen):
+        font = pygame.font.Font('data/font1.ttf', 18)
+        question = font.render('Желаете купить что-то?', 1, (200,200,200))
+        YES = font.render('Да', 1, (0,255,0))
+        NO = font.render('Нет', 1, (255,0,0))
+
+        while True:
+            key = pygame.key.get_pressed()
+            mouse = pygame.mouse.get_pos()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+            if key[pygame.K_ESCAPE]:
+                return False
+
+            if 454 < mouse[0] < 487 and 287 < mouse[1] < 305 and pygame.mouse.get_pressed()[0]: # button NO
+                return False
+            elif 317 < mouse[0] < 335 and 287 < mouse[1] < 305 and pygame.mouse.get_pressed()[0]:
+                self.shop(screen)
+                return False
+
+
+            pygame.draw.rect(screen, (0,0,0), (290, 235, 220, 75))
+            pygame.draw.line(screen, (255,255,255), (290, 235), (290+218, 235), 2)
+            pygame.draw.line(screen, (255,255,255), (290, 235), (290, 235+75), 2)
+            pygame.draw.line(screen, (255,255,255), (290+218, 235), (290+218, 235+75), 2)
+            pygame.draw.line(screen, (255,255,255), (290, 235+75), (290+218, 235+75), 2)
+            screen.blit(question, (320, 243))
+            screen.blit(YES, (315, 284))
+            screen.blit(NO, (460, 284))
+            if self.score >= 250:
+                score = font.render('Score:' + str(self.score), 1, (255,215,0))
+                screen.blit(score, (368 ,265))
+            else:
+                score = font.render('Score:' + str(self.score), 1, (200,200,200))
+                screen.blit(score, (368, 265))
+            pygame.display.update()
+
+    def shop(self, screen):
+        pygame.time.wait(500)
+        font = pygame.font.Font('data/font1.ttf', 22)
+        shop = font.render('SHOP', 1, (200,200,200))
+        exit = font.render('EXIT', 1, (255,0,0))
+        haveit = font.render('Bought', 1, (255,0,0))
+        sword_cost = font.render('Cost: 250', 1, (255,215,0))
+        radiance_cost = font.render('Cost: 1000', 1, (255,215,0))
+        while True:
+            key = pygame.key.get_pressed()
+            mouse = pygame.mouse.get_pos()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+            if key[pygame.K_ESCAPE]:
+                return False
+
+            if 275 < mouse[0] < 375 and 250 < mouse[1] < 350 and pygame.mouse.get_pressed()[0] and self.score >= 250:
+                Constants.damage += 10
+                self.score -= 250
+                return False
+            elif 430 < mouse[0] < 530 and 250 < mouse[1] < 350 and pygame.mouse.get_pressed()[0] and self.score >= 1000 and Constants.radiance == False:
+                Constants.radiance = True
+                self.score -= 1000
+                return False
+            elif 384 < mouse[0] < 418 and 361 < mouse[1] < 381 and pygame.mouse.get_pressed()[0]:
+                return False
+
+            pygame.draw.rect(screen, (0,0,0), (200, 200, 400, 200))
+            pygame.draw.line(screen, (255,255,255), (200, 200), (600, 200), 2)
+            pygame.draw.line(screen, (255,255,255), (600, 200), (600, 400), 2)
+            pygame.draw.line(screen, (255,255,255), (200, 400), (600, 400), 2)
+            pygame.draw.line(screen, (255,255,255), (200, 200), (200, 400), 2)
+            screen.blit(sword_cost, (288, 230))
+            screen.blit(radiance_cost, (440 ,230))
+            if self.score >= 250:
+                screen.blit(pygame.image.load('data/Sword.png').convert_alpha(), (275, 250))
+            else:
+                screen.blit(pygame.image.load('data/sword1.png').convert_alpha(), (275, 250))
+            if self.score >= 1000 and Constants.radiance == False:
+                screen.blit(pygame.image.load('data/radiance.png').convert_alpha(), (430, 250))
+            elif Constants.radiance == True:
+                screen.blit(pygame.image.load('data/radiance1.png').convert_alpha(), (430, 250))
+                screen.blit(haveit, (452, 288))
+            else:
+                screen.blit(pygame.image.load('data/radiance1.png').convert_alpha(), (430, 250))
+            screen.blit(shop, (385, 213))
+            screen.blit(exit, (385, 360))
+            pygame.display.update()
+
+
 
     def contact_wall(self, wall):
         if wall.x - 30 < self.x < wall.x + 20 and wall.y - 40 < self.y < wall.y + 30:
@@ -280,6 +468,25 @@ class Player():
         screen.blit(hp_render, (130, height - 50))
         screen.blit(mp_render, (130, height - 30))
         screen.blit(name_render, (37, height - 106))
+
+    def draw_status(self, screen):
+        font = pygame.font.Font('data/font1.ttf', 14)
+        damage = font.render('Damage: ' + str(Constants.damage), 1, (200,200,200))
+        mouse = pygame.mouse.get_pos()
+
+        if 10 < mouse[0] < 80 and 525 < mouse[1] < 590:
+            pygame.draw.rect(screen, (0,0,0), (10, 522, 90, 67))
+            if Constants.damage <= 99:
+                screen.blit(damage, (24, 529))
+            elif 100 <= Constants.damage <= 999:
+                screen.blit(damage, (21, 529))
+            else:
+                screen.blit(damage, (19, 529))
+            if Constants.radiance == True:
+                screen.blit(radiance_true, (40, 549))
+            else:
+                screen.blit(radiance_false, (40, 549))
+
 
     def pool_actions(self):
         if self.mp < self.max_mp:

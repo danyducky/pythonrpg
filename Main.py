@@ -4,6 +4,7 @@
 import pygame
 import sys
 from Constants import *
+import Constants
 from Hero import *
 from Objects import *
 import Mob
@@ -12,16 +13,18 @@ from Walls import *
 import random
 import time
 import Bot
+
 pygame.init()
 
 
-class Main():
+class Main:
     def __init__(self, background, Player, start_x, start_y, mobs):
         self.background = background
         self.caption = caption
         self.screen = screen
         self.clock = pygame.time.Clock()
         self.Player = Player
+        self.Mob = Mob
         self.Player.x = start_x
         self.Player.y = start_y
         self.mobs = mobs
@@ -85,16 +88,17 @@ class Main():
         self.screen.blit(self.background, (0, 0))
         self.screen.blit(pygame.image.load('data/spawn.png').convert_alpha(), (750, 550))
         self.screen.blit(hud_bar, (110, height - 60))
+        self.screen.blit(pygame.image.load('data/shop_img.jpg'), (270, 500))
         if self.Player.dies >= 10:
             self.screen.blit(pygame.image.load('data/Boss.png').convert_alpha(), (750, 0))
         self.Player.render()
         self.Player.draw_score()
         self.Player.draw_hp_mp()
         self.Player.render_of_score()
+        self.Player.draw_status(self.screen)
         font = pygame.font.Font('data/font1.ttf', 18)
         fps = font.render('FPS: ' + str((round(self.clock.get_fps(), 2))), 1, (255, 255, 255))
         self.screen.blit(fps, (5, 5))
-
 
         for fireball in self.fireballs:
             fireball.move()
@@ -109,10 +113,10 @@ class Main():
         for bot in self.bots:
             bot.move()
             bot.render(self.Player)
-            self.Player.contact_check_bot(bot, self.screen)
+            self.Player.contact_check_bot(bot, self.screen, self.objects, self.fireballs, self.mobs, self.Player)
 
         for mob in self.mobs:
-            mob.move()
+            mob.move(self.Player)
             mob.draw_hp()
             mob.render_shot(self.objects, self.Player)
             mob.render()
@@ -124,9 +128,11 @@ class Main():
             wall.render()
             self.Player.contact_wall(wall)
 
-
         self.clock.tick(30)
         pygame.display.update()
+
+    def shop(self):
+        pass
 
     def pause(self):
         while True:
@@ -165,7 +171,7 @@ class Main():
                         sys.exit()
             mouse = pygame.mouse.get_pos()
             if pygame.mouse.get_pressed()[0] and 340 < mouse[0] < 435 and 75 < mouse[1] < 115:
-                Main(background, Hero.Player('ducky'), start_x, start_y, mobs=[])
+                Main(background, Hero.Player('ducky'), start_x, start_y, mobs=[], )
             elif pygame.mouse.get_pressed()[0] and 5 < mouse[0] < 75 and 76 < mouse[1] < 105:
                 sys.exit()
             if pygame.mouse.get_pressed()[0] and 5 < mouse[0] < 100 and 125 < mouse[1] < 160 and status == False:
@@ -184,11 +190,10 @@ class Main():
 
             if status == True:
                 Menu.menu.text('W, A, S, D - КНОПКИ ПЕРЕДВИЖЕНИЯ', 15, (15, 200), (255, 255, 255))
-                Menu.menu.text('1,2,3,4 -КНОПКИ ОТВЕЧАЮЩИЕ ЗА СВОСОБНОСТИ ,КОТОРЫЕ АКТИВНЫ ПРИ ОПРЕДЕЛЕННЫХ УСЛОВИЯХ', 15, (15, 230), (255, 255, 255))
-                Menu.menu.text('SHIFT- КНОПКА ОТВЕЧАЮЩАЯ ЗА БЛИНК ПЕРСОНАЖА',15, (15, 260), (255, 255, 255))
+                Menu.menu.text('1,2,3,4 -КНОПКИ ОТВЕЧАЮЩИЕ ЗА СВОСОБНОСТИ ,КОТОРЫЕ АКТИВНЫ ПРИ ОПРЕДЕЛЕННЫХ УСЛОВИЯХ',
+                               15, (15, 230), (255, 255, 255))
+                Menu.menu.text('SHIFT- КНОПКА ОТВЕЧАЮЩАЯ ЗА БЛИНК ПЕРСОНАЖА', 15, (15, 260), (255, 255, 255))
                 status1 = True
-
-
 
             pygame.display.update()
 
@@ -210,12 +215,13 @@ class Main():
     def spawn_mob(self):
         if 718 <= self.Player.x <= 800 and 545 <= self.Player.y <= 600:
             if len(self.mobs) < self.len_of_demons:
-                self.mobs.append(Mob.Demon(random.randrange(200, 400, 50), random.randrange(200, 400, 50), random.randint(0, 3), 2))
+                self.mobs.append(
+                    Mob.Demon(random.randrange(200, 400, 50), random.randrange(200, 400, 50), random.randint(0, 3), 2))
 
     def spawn_bots(self):
-        if len(self.bots)<1:
-            self.bots.append(Bot.Milena(random.randrange(710, 750), random.randrange(400, 440), random.randint(0, 3), 2))
-
+        if len(self.bots) < 1:
+            self.bots.append(
+                Bot.Milena(random.randrange(710, 750), random.randrange(400, 440), random.randint(0, 3), 2))
 
     def Player_die(self):
         if self.Player.status == False:
@@ -237,9 +243,15 @@ class Main():
                 pygame.display.update()
 
     def NewLoc(self):
-    #    if self.Player.dies >= 10:
-        if 740 <= self.Player.x <= 800 and 0 <= self.Player.y <= 35:
-            Location(background_2, self.Player, start_x, start_y - 80, mobs=[])
+        if self.Player.dies >= 10:
+            if 740 <= self.Player.x <= 800 and 0 <= self.Player.y <= 35:
+                Location(background_2, self.Player, start_x, start_y - 80, mobs=[])
+
+    def NewHome(self):
+        mouse = pygame.mouse.get_pos()
+        if len(self.mobs) == 0:
+            if 270 < mouse[0] < 307 and 503 < mouse[1] < 540 and pygame.mouse.get_pressed()[0]:
+                Location_2(loc2_background, self.Player, start_x, start_y - 80, mobs=[])
 
     def Main_loop(self):
         pygame.time.set_timer(mphp_tick, tick_time)
@@ -256,7 +268,10 @@ class Main():
             self.render()
             self.spawn_bots()
             self.NewLoc()
+            self.NewHome()
+            self.shop()
             self.wall_render()
+
 
 
 if __name__ == '__main__':
@@ -286,9 +301,19 @@ class Location(Main):
         self.Player.draw_score()
         self.Player.draw_hp_mp()
         self.Player.render_of_score()
+        self.Player.draw_status(self.screen)
         font = pygame.font.Font('data/font1.ttf', 18)
         fps = font.render('FPS: ' + str((round(self.clock.get_fps(), 2))), 1, (255, 255, 255))
         self.screen.blit(fps, (5, 5))
+
+        for mob in self.mobs:
+            mob.move(self.screen, self.clock, self.Player, self.objects)
+            mob.draw_hp()
+            mob.render_shot(self.objects, self.Player)
+            mob.render()
+            self.Player.contact_check(mob)
+            for tree in self.objects:
+                mob.contact_tree(tree)
 
         for fireball in self.fireballs:
             fireball.move()
@@ -297,40 +322,9 @@ class Location(Main):
 
             for mob in self.mobs:
                 mob.fireball_contact(self.mobs, mob, self.fireballs, fireball, self.Player)
-                if mob.status == False:
-                    while True:
-                        for tree in self.objects:
-                            tree.render()
-                        font = pygame.font.Font('data/font1.ttf', 40)
-                        Over = font.render('Game Over', 1, (255, 0, 0))
-                        Esc = font.render('ESC to EXIT', 1, (255, 0, 0))
-                        Space = font.render('SPACE to REgame', 1, (0, 0, 0))
-                        for event in pygame.event.get():
-                            if event.type == pygame.QUIT:
-                                sys.exit()
-                            elif event.type == pygame.KEYDOWN:
-                                if event.key == pygame.K_ESCAPE:
-                                    sys.exit()
-                                elif event.key == pygame.K_SPACE:
-                                    Main.menu()
-
-                        self.screen.blit(Over, (350, 210))
-                        self.screen.blit(Esc, (345, 250))
-                        self.screen.blit(Space, (308, 290))
-                        self.clock.tick(15)
-                        pygame.display.update()
 
             for tree in self.objects:
                 tree.fireball_player_contact(fireball, self.fireballs)
-
-        for mob in self.mobs:
-            mob.move()
-            mob.draw_hp()
-            mob.render_shot(self.objects, self.Player)
-            mob.render()
-            self.Player.contact_check(mob)
-            for tree in self.objects:
-                mob.contact_tree(tree)
 
         for tree in self.objects:
             tree.render()
@@ -385,4 +379,108 @@ class Location(Main):
 
     def NewLoc(self):
         if 740 <= self.Player.x <= 800 and 0 <= self.Player.y <= 35:
+            Main(background, self.Player, start_x, start_y, mobs=[])
+
+    def NewHome(self):
+        pass
+
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+class Location_2(Main):
+    def __init__(self, background, Player, start_x, start_y, mobs):
+        Main.__init__(self, background, Player, start_x, start_y, mobs)
+
+    def wall_render(self):
+        pass
+
+    def spawn_bots(self):
+        if len(self.bots) < 1:
+            self.bots.append(Bot.Reseiler(380, 100, down, 0))
+
+    def spawn_mob(self):
+        pass
+
+    def NewHome(self):
+        pass
+
+    def render(self):
+        self.screen.blit(self.background, (0, 0))
+        self.screen.blit(hud_bar, (110, height - 60))
+        self.Player.render()
+        self.Player.draw_score()
+        self.Player.draw_hp_mp()
+        self.screen.blit(teleport, (750, 550))
+        self.Player.render_of_score()
+        self.Player.draw_status(self.screen)
+        font = pygame.font.Font('data/font1.ttf', 18)
+        fps = font.render('FPS: ' + str((round(self.clock.get_fps(), 2))), 1, (255, 255, 255))
+        self.screen.blit(fps, (5, 5))
+        for bot in self.bots:
+            bot.move()
+            bot.render(self.Player)
+            self.Player.contact_check_reseiler(bot, self.screen)
+
+        for fireball in self.fireballs:
+            fireball.move()
+            fireball.render(fireball, self.fireballs)
+            fireball.hud_contact(fireball, self.fireballs)
+
+            for mob in self.mobs:
+                mob.fireball_contact(self.fireballs, fireball, self.Player)
+                if mob.status == False:
+                    while True:
+                        for tree in self.objects:
+                            tree.render()
+                        font = pygame.font.Font('data/font1.ttf', 40)
+                        Over = font.render('Game Over', 1, (255, 0, 0))
+                        Esc = font.render('ESC to EXIT', 1, (255, 0, 0))
+                        Space = font.render('SPACE to REgame', 1, (0, 0, 0))
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                sys.exit()
+                            elif event.type == pygame.KEYDOWN:
+                                if event.key == pygame.K_ESCAPE:
+                                    sys.exit()
+                                elif event.key == pygame.K_SPACE:
+                                    Main.menu()
+
+                        self.screen.blit(Over, (350, 210))
+                        self.screen.blit(Esc, (345, 250))
+                        self.screen.blit(Space, (308, 290))
+                        self.clock.tick(15)
+                        pygame.display.update()
+
+            for tree in self.objects:
+                tree.fireball_player_contact(fireball, self.fireballs)
+
+        for tree in self.objects:
+            tree.render()
+            self.Player.contact_tree(tree)
+
+        self.clock.tick(30)
+        pygame.display.update()
+
+    def NewHome(self):
+        if 718 <= self.Player.x <= 800 and 500 <= self.Player.y <= 600:
             Main(background, self.Player, start_x, start_y, mobs)
+
+
+
+    def Main_loop(self):
+        pygame.time.set_timer(mphp_tick, tick_time)
+        pygame.time.set_timer(spawn_mob, spawn_time)
+        pygame.time.set_timer(demon_move, demon_move_delay)
+        pygame.time.set_timer(demon_remove, remove_time)
+        pygame.time.set_timer(demon_shoot, shoot_delay)
+        pygame.time.set_timer(demon_delay, demon_time_delay)
+        pygame.time.set_timer(Player_die, Player_die_delay)
+
+        while True:
+            self.event()
+            self.Player.move()
+            self.render()
+            self.spawn_bots()
+            self.NewLoc()
+            self.NewHome()
+            self.wall_render()
